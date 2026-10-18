@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tidy 功能講義</title>
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1A1A1A; --sub:#5F5B52; --mute:#8A8577; --bg:#F0F0EC; --paper:#FFFFFF; --cream:#F6F5F1;
+  --lime:#D6FF5C; --green:#2F6B43; --green-bg:#EEF6F1; --red:#B4442F; --red-bg:#FBE3DD;
+  --yellow:#6E5410; --yellow-bg:#FFF4D6; --blue:#2B5A7B; --blue-bg:#EAF1F7; --purple:#5B3E8F; --purple-bg:#F1ECFA;
+  --line:#E2DED3; --dark:#20262B;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans TC',system-ui,sans-serif;line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.mono{font-family:'JetBrains Mono',monospace}
+
+/* 上方列 */
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:10px 16px;background:rgba(240,240,236,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.logo{width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--lime);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;flex-shrink:0}
+.topbar b{font-size:15px;font-weight:900}
+.topbar small{display:block;font-size:11.5px;color:var(--mute);font-weight:700;line-height:1.2}
+.toc-btn{margin-left:auto;border:1.5px solid var(--ink);background:var(--paper);border-radius:999px;padding:6px 14px;font-weight:900;font-size:13px;cursor:pointer;font-family:inherit;color:var(--ink)}
+.progress{position:absolute;left:0;bottom:-1px;height:3px;background:var(--ink);width:0}
+
+/* 版面 */
+.layout{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:270px minmax(0,1fr);gap:32px;padding:24px 20px 80px}
+nav.toc{position:sticky;top:76px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;background:var(--paper);border:1.5px solid var(--ink);border-radius:18px;padding:14px 12px;box-shadow:3px 3px 0 var(--ink)}
+nav.toc h4{margin:2px 6px 8px;font-size:12px;color:var(--mute);letter-spacing:.08em}
+nav.toc a{display:flex;gap:8px;align-items:baseline;text-decoration:none;padding:6px 8px;border-radius:10px;font-size:14px;font-weight:700;color:var(--sub)}
+nav.toc a .n{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--mute);min-width:22px}
+nav.toc a:hover{background:var(--cream);color:var(--ink)}
+nav.toc a.on{background:var(--ink);color:var(--lime)}
+nav.toc a.on .n{color:var(--lime)}
+nav.toc .part{margin:12px 8px 4px;font-size:11.5px;font-weight:900;color:var(--ink);border-top:1px dashed var(--line);padding-top:10px}
+main{min-width:0}
+
+/* 封面 */
+.cover{background:var(--dark);color:#fff;border-radius:28px;padding:44px 36px;position:relative;overflow:hidden}
+.cover .eyebrow{display:inline-block;background:var(--lime);color:var(--ink);font-weight:900;font-size:12px;border-radius:999px;padding:3px 12px;letter-spacing:.06em}
+.cover h1{font-size:44px;line-height:1.2;margin:16px 0 10px;font-weight:900;letter-spacing:.02em}
+.cover p{color:#C9D1D6;font-size:16px;max-width:560px;margin:0}
+.cover .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.cover .meta span{background:rgba(255,255,255,.08);border-radius:12px;padding:8px 12px;font-size:13px;font-weight:700;color:#E8ECEF}
+.cover svg.wave{position:absolute;right:-30px;bottom:-20px;width:320px;opacity:.9}
+
+/* 章節 */
+section.ch{margin-top:44px}
+.ch-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.ch-num{width:52px;height:52px;border-radius:16px;background:var(--lime);border:1.5px solid var(--ink);box-shadow:2px 2px 0 var(--ink);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:18px;flex-shrink:0}
+.ch-head h2{margin:0;font-size:27px;font-weight:900;line-height:1.3}
+.ch-head small{display:block;font-size:13px;color:var(--mute);font-weight:700}
+.dev-badge{display:inline-flex;align-items:center;gap:5px;background:var(--ink);color:var(--lime);font-size:11.5px;font-weight:900;border-radius:999px;padding:2px 10px;vertical-align:middle;margin-left:6px;white-space:nowrap}
+.card{background:var(--paper);border:1.5px solid var(--ink);border-radius:20px;padding:22px 24px;box-shadow:3px 3px 0 var(--ink);margin-bottom:16px}
+.card h3{margin:0 0 6px;font-size:19px;font-weight:900;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card h3 .where{font-size:12px;font-weight:700;color:var(--mute);background:var(--cream);border-radius:999px;padding:2px 10px}
+.card p{margin:8px 0}
+.card ul,.card ol{margin:8px 0;padding-left:1.3em}
+.card li{margin:4px 0}
+.lead{font-size:17px;color:var(--sub);margin:0 0 16px}
+
+/* 提示框 */
+.tip,.warn,.key,.note{border-radius:14px;padding:12px 16px;margin:12px 0;font-size:15px}
+.tip{background:var(--green-bg);color:#24533A}
+.warn{background:var(--red-bg);color:#7A2A1C}
+.key{background:var(--yellow-bg);color:#5A450D}
+.note{background:var(--blue-bg);color:#234B66}
+.tip b:first-child,.warn b:first-child,.key b:first-child,.note b:first-child{display:block;font-size:13px;letter-spacing:.04em;margin-bottom:2px}
+
+/* 步驟 */
+.steps{counter-reset:s;list-style:none;padding:0 !important;margin:10px 0}
+.steps li{counter-increment:s;position:relative;padding:4px 0 10px 44px;margin:0 !important}
+.steps li::before{content:counter(s);position:absolute;left:0;top:3px;width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--lime);font-weight:900;display:flex;align-items:center;justify-content:center;font-size:14px;font-family:'JetBrains Mono',monospace}
+.steps li::after{content:"";position:absolute;left:14px;top:36px;bottom:0;width:2px;background:var(--line)}
+.steps li:last-child::after{display:none}
+
+/* 格子 */
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.tile{background:var(--cream);border-radius:14px;padding:12px 14px}
+.tile b{display:block;font-size:15px;font-weight:900}
+.tile small{display:block;font-size:13.5px;color:var(--sub);line-height:1.6;margin-top:2px}
+
+/* 小元件示意 */
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:900;border-radius:999px;padding:3px 12px;margin:2px 4px 2px 0;white-space:nowrap}
+.c-g{background:var(--green-bg);color:var(--green)}.c-r{background:var(--red-bg);color:var(--red)}.c-y{background:var(--yellow-bg);color:var(--yellow)}.c-b{background:var(--blue-bg);color:var(--blue)}.c-p{background:var(--purple-bg);color:var(--purple)}.c-k{background:var(--ink);color:var(--lime)}.c-w{background:var(--cream);color:var(--sub)}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.light{display:inline-flex;flex-direction:column;gap:5px;background:#111;border-radius:10px;padding:6px;vertical-align:middle}
+.light i{width:14px;height:14px;border-radius:50%;opacity:.2;display:block}
+.light i.on{opacity:1;box-shadow:0 0 8px currentColor}
+.lt-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-top:1px solid var(--line)}
+.lt-row:first-of-type{border-top:0}
+.lt-row b{font-size:16px}
+.lt-row small{display:block;color:var(--sub);font-size:14px}
+
+/* 底部導覽示意 */
+.phone-nav{display:grid;grid-template-columns:repeat(5,1fr);background:var(--paper);border:1.5px solid var(--ink);border-radius:18px;overflow:hidden;margin:12px 0}
+.phone-nav div{padding:12px 6px;text-align:center;border-right:1px solid var(--line)}
+.phone-nav div:last-child{border-right:0}
+.phone-nav svg{width:22px;height:22px;display:block;margin:0 auto 4px}
+.phone-nav b{display:block;font-size:14px;font-weight:900}
+.phone-nav small{display:block;font-size:11.5px;color:var(--mute);line-height:1.45;margin-top:3px}
+
+/* 時間軸 */
+.timeline{position:relative;margin:8px 0 0;padding-left:0;list-style:none}
+.timeline li{display:grid;grid-template-columns:108px minmax(0,1fr);gap:16px;padding:12px 0;border-top:1px dashed var(--line)}
+.timeline li:first-child{border-top:0}
+.timeline .t{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px}
+.timeline .t small{display:block;font-family:'Noto Sans TC';font-size:12px;color:var(--mute);font-weight:700}
+.timeline b{font-size:16px}
+
+/* 表格 */
+table{width:100%;border-collapse:collapse;font-size:14.5px;margin:10px 0}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12.5px;color:var(--mute);font-weight:900;letter-spacing:.04em}
+td b{font-weight:900}
+.tbl-wrap{overflow-x:auto}
+
+/* 辭典 */
+dl.gloss{display:grid;grid-template-columns:minmax(120px,190px) minmax(0,1fr);gap:0;margin:0}
+dl.gloss dt,dl.gloss dd{padding:10px 0;border-top:1px solid var(--line);margin:0}
+dl.gloss dt{font-weight:900;padding-right:12px}
+dl.gloss dt:first-of-type,dl.gloss dt:first-of-type + dd{border-top:0}
+
+/* FAQ */
+details.faq{background:var(--paper);border:1.5px solid var(--ink);border-radius:16px;margin-bottom:10px;overflow:hidden}
+details.faq summary{cursor:pointer;list-style:none;padding:14px 18px;font-weight:900;display:flex;justify-content:space-between;gap:10px}
+details.faq summary::-webkit-details-marker{display:none}
+details.faq summary::after{content:"+";font-family:'JetBrains Mono',monospace;font-size:20px;line-height:1}
+details.faq[open] summary::after{content:"−"}
+details.faq div{padding:0 18px 16px;color:var(--sub)}
+
+/* 自我檢查 */
+.check{background:var(--dark);color:#fff;border-radius:20px;padding:20px 22px;margin:16px 0}
+.check h4{margin:0 0 8px;color:var(--lime);font-size:15px;letter-spacing:.06em}
+.check ol{margin:0;padding-left:1.3em}
+.check li{margin:6px 0}
+.check details{margin-top:12px}
+.check summary{cursor:pointer;font-weight:900;color:var(--lime);font-size:14px}
+.check details p{color:#C9D1D6;margin:6px 0 0;font-size:14.5px}
+
+.part-head{margin:56px 0 0;padding:22px 24px;border-radius:22px;background:var(--ink);color:#fff}
+.part-head small{color:var(--lime);font-weight:900;letter-spacing:.1em;font-size:12px}
+.part-head h2{margin:4px 0 4px;font-size:26px}
+.part-head p{margin:0;color:#C9D1D6}
+
+footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--mute);font-size:13px}
+
+/* 手機 */
+@media (max-width: 900px){
+  .layout{grid-template-columns:1fr;padding:16px 16px 80px;gap:0}
+  nav.toc{position:fixed;top:0;left:0;bottom:0;width:min(84vw,320px);max-height:none;border-radius:0 18px 18px 0;z-index:50;transform:translateX(-105%);transition:transform .25s ease;box-shadow:6px 0 0 rgba(0,0,0,.15)}
+  nav.toc.open{transform:none}
+  .scrim{position:fixed;inset:0;background:rgba(17,20,24,.4);z-index:40;display:none}
+  .scrim.on{display:block}
+  .cover{padding:30px 22px;border-radius:22px}
+  .cover h1{font-size:32px}
+  .cover svg.wave{width:200px;opacity:.5}
+  .ch-head h2{font-size:22px}
+  .ch-num{width:44px;height:44px;font-size:16px}
+  .card{padding:18px 16px;border-radius:18px}
+  .grid3,.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .phone-nav small{display:none}
+  .timeline li{grid-template-columns:84px minmax(0,1fr);gap:10px}
+  dl.gloss{grid-template-columns:1fr}
+  dl.gloss dt{padding-bottom:0}
+  dl.gloss dd{border-top:0;padding-top:2px}
+}
+@media (min-width: 901px){.toc-btn{display:none}.scrim{display:none}}
+@media (max-width: 520px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+@media print{
+  .topbar,nav.toc,.scrim{display:none}
+  .layout{display:block;padding:0}
+  body{background:#fff}
+  .card,.check{box-shadow:none;break-inside:avoid}
+  section.ch{break-before:page}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">T</div>
+  <div><b>Tidy 功能講義</b><small>盤後觀察工具・帶你把每個功能用起來</small></div>
+  <button class="toc-btn" id="tocBtn" type="button">目錄</button>
+  <div class="progress" id="prog"></div>
+</header>
+<div class="scrim" id="scrim"></div>
+
+<div class="layout">
+<nav class="toc" id="toc">
+  <h4>目錄</h4>
+  <a href="#c0"><span class="n">00</span>為什麼會有 Tidy</a>
+  <a href="#c1"><span class="n">01</span>先把 Tidy 放到手機</a>
+  <a href="#c2"><span class="n">02</span>畫面怎麼看</a>
+  <a href="#c3"><span class="n">03</span>我一天怎麼用</a>
+  <a href="#c4"><span class="n">04</span>今日：先看大盤</a>
+  <a href="#c5"><span class="n">05</span>選股：找到值得研究的股票</a>
+  <a href="#c6"><span class="n">06</span>持股：試算、追蹤、守紀律</a>
+  <a href="#c7"><span class="n">07</span>魚小韭：自動駕駛</a>
+  <a href="#c8"><span class="n">08</span>秘密愛心便當</a>
+  <a href="#c9"><span class="n">09</span>自選與個股頁</a>
+  <a href="#c10"><span class="n">10</span>更多：ETF 與配股配息</a>
+  <div class="part">附錄</div>
+  <a href="#c11"><span class="n">11</span>新手四步驟</a>
+  <a href="#c12"><span class="n">12</span>大家常問的問題</a>
+  <a href="#c13"><span class="n">13</span>名詞小辭典</a>
+</nav>
+
+<main>
+
+<div class="cover" id="top">
+  <span class="eyebrow">TIDY・FEATURE GUIDE</span>
+  <h1>Tidy 功能講義</h1>
+  <p>這份講義會帶你從打開 App 的第一天開始，一個一個看懂 Tidy 的功能：每個燈號在說什麼、每一頁該怎麼用，還有我自己每天是怎麼用它的。</p>
+  <div class="meta"><span>13 個章節</span><span>手機、電腦都能看</span><span>可以直接列印</span><span>2026 年 10 月版</span></div>
+  <svg class="wave" viewBox="0 0 320 200" fill="none"><path d="M0 140 C40 110 70 170 110 140 C150 110 180 170 220 140 C260 110 290 170 320 140" stroke="#D6FF5C" stroke-width="6" stroke-linecap="round"/><path d="M0 170 C40 140 70 200 110 170 C150 140 180 200 220 170 C260 140 290 200 320 170" stroke="#5F6A72" stroke-width="4" stroke-linecap="round"/><path d="M40 90 L90 60 L130 78 L190 30 L240 52 L290 20" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="290" cy="20" r="8" fill="#D6FF5C"/></svg>
+</div>
+
+<!-- 00 -->
+<section class="ch" id="c0">
+  <div class="ch-head"><div class="ch-num">00</div><div><h2>為什麼會有 Tidy</h2><small>先跟你聊聊這個工具是怎麼來的</small></div></div>
+  <div class="card">
+    <p>我自己平常要上班，沒辦法整天盯盤。以前買股票常常是看新聞、憑感覺，買了之後也不知道什麼時候該賣，跌了就想說再等等，結果越等越深。</p>
+    <p>所以我做了 Tidy（以前叫潮汐指標）。我想要的很簡單：<b>把「什麼時候可以買、什麼時候該停手、買了怎麼守」這些紀律，變成每天打開就看得到的燈號和清單。</b>收盤後花幾分鐘看一下，就知道明天要做什麼。</p>
+    <div class="grid2" style="margin-top:12px">
+      <div class="tile" style="background:var(--green-bg)"><b>Tidy 會幫你</b><small>告訴你大盤適不適合進場、該投入幾成；收盤後掃描全市場，列出值得研究的股票；記錄持股，提醒你哪一檔該出場；用白話解釋圖表和數據。</small></div>
+      <div class="tile" style="background:var(--red-bg)"><b>Tidy 不會做的事</b><small>它不是投顧，不報明牌；它不會幫你下單，所有買賣都要你自己到券商操作；它也不保證賺錢，最後的決定永遠在你自己。</small></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>我用 Tidy 守住的三個原則</h3>
+    <ol class="steps">
+      <li><b>買之前先想好停損。</b>每一檔股票，系統都會幫你算出防守底線。收盤跌破，就照紀律出場，不凹單。</li>
+      <li><b>不攤平。</b>越跌越買不是紀律，是賭運氣。要加碼，只在趨勢對的時候加。</li>
+      <li><b>不追已經大漲一段的股票。</b>名單是收盤後的結果，隔天開盤已經大漲的，就先放著。</li>
+    </ol>
+    <div class="note"><b>關於數字</b>系統背後有很多參數，這份講義不會一一列出來。我只會跟你說「看到什麼、代表什麼、該怎麼做」，你看懂結果就好。</div>
+  </div>
+</section>
+
+<!-- 01 -->
+<section class="ch" id="c1">
+  <div class="ch-head"><div class="ch-num">01</div><div><h2>先把 Tidy 放到手機</h2><small>加到主畫面，用起來就跟一般 App 一樣</small></div></div>
+  <div class="card">
+    <p>Tidy 是網頁 App，不用去 App Store 下載。加到主畫面之後，它會全螢幕打開，速度也比較快。</p>
+    <div class="grid2">
+      <div class="tile"><b>iPhone</b><small>用 Safari 打開網址，按下方「分享」，選「加入主畫面」。</small></div>
+      <div class="tile"><b>Android</b><small>用 Chrome 打開網址，按右上角選單，選「加到主畫面」。</small></div>
+    </div>
+    <div class="warn"><b>常見卡關</b>如果你是從 LINE、Messenger 或 Google App 點開的，那是內嵌瀏覽器，沒辦法加到主畫面。先複製網址，再貼到 Safari 或 Chrome 打開就好。</div>
+    <p>打開後按「登入」就可以開始用。第一次進來，今日頁最上面有「第一次使用，或想複習怎麼用？」，按「開始」我會帶你把每一頁看一遍。</p>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="ch" id="c2">
+  <div class="ch-head"><div class="ch-num">02</div><div><h2>畫面怎麼看</h2><small>五個分頁，加上右上角三個按鈕</small></div></div>
+  <div class="card">
+    <p>畫面最下面固定有五個按鈕，所有功能都從這裡進去。點進去之後，上方如果還有一排小分頁，就可以左右切換。</p>
+    <div class="phone-nav">
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg><b>今日</b><small>儀表板、大盤總覽</small></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><b>選股</b><small>掃描、大補包、跟著大戶、買點追蹤</small></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M3 12h18"/></svg><b>持股</b><small>我的追蹤、系統持有</small></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg><b>自選</b><small>自選清單</small></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg><b>更多</b><small>ETF、配股配息、指南、設定</small></div>
+    </div>
+    <div class="grid3">
+      <div class="tile"><b>問問</b><small>右上角那個黃色的小對話泡泡。不知道怎麼用、看不懂某檔股票，直接用白話問它。</small></div>
+      <div class="tile"><b>設定</b><small>調整系統參數和你自己的偏好。</small></div>
+      <div class="tile"><b>找股</b><small>輸入代號或名稱，直接打開那一檔的圖表。</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="ch" id="c3">
+  <div class="ch-head"><div class="ch-num">03</div><div><h2>我一天怎麼用</h2><small>照著這個節奏，最省力也最準</small></div></div>
+  <div class="card">
+    <ul class="timeline">
+      <li><div class="t">早上<small>開盤前</small></div><div><b>看早安速報</b><br>昨晚美股怎麼走、台指期夜盤、預估開盤，還有我的持股今天要守在哪個價位。平日早上第一次打開，它會自己跳出來。</div></li>
+      <li><div class="t">09:00<small>盤中</small></div><div><b>照計畫下單，不臨時起意</b><br>要買什麼，前一天收盤後就決定好了。盤中我只看持股有沒有碰到防守底線。</div></li>
+      <li><div class="t">13:30<small>收盤後</small></div><div><b>跑一次鯨魚雷達</b><br>收盤後資料最完整，掃出來的結果最準。跑完之後，魚小韭也會自動算好明天的計畫。</div></li>
+      <li><div class="t">15:00<small>下午</small></div><div><b>看法人在買什麼</b><br>三大法人的買賣超差不多這時候公布，可以到「跟著大戶」看一下。</div></li>
+      <li><div class="t">晚上<small>睡前</small></div><div><b>打開便當、整理明天的計畫</b><br>開一個秘密愛心便當看看驚喜，再把明天要買的、要守的價位想好。</div></li>
+    </ul>
+    <div class="key"><b>最重要的一件事</b>出場一律看「收盤價」。盤中跌破又站回來的，不算跌破，不用被嚇到。</div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="ch" id="c4">
+  <div class="ch-head"><div class="ch-num">04</div><div><h2>今日：先看大盤</h2><small>底部「今日」→ 儀表板、大盤總覽</small></div></div>
+  <p class="lead">我的習慣是：買任何股票之前，先看大盤。大盤不對，選到再好的股票也很容易虧。</p>
+  <div class="card">
+    <h3>今天的結論 <span class="where">儀表板最上面</span></h3>
+    <p>最上面那張黑色的卡，一句話把三件事說完：大盤現在怎樣、建議投入幾成資金、你的持股狀況。很忙的話，看這張就夠了。卡片裡按「繼續閱讀」，可以打開完整的早安速報。</p>
+    <p>儀表板上面有一排快捷鍵，往下滑會收起來、往上滑會出現，點了直接跳到那一區。每張卡的標題列都有重點數字，不想看的可以收起來。</p>
+  </div>
+  <div class="card">
+    <h3>大盤燈號</h3>
+    <p>大盤我分成四種狀態，它決定你今天可以多積極：</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>燈號</th><th>意思</th><th>你可以怎麼做</th></tr>
+      <tr><td><span class="chip c-g"><span class="dot" style="background:#2F6B43"></span>多頭</span></td><td>大盤往上走</td><td>可以積極</td></tr>
+      <tr><td><span class="chip c-y"><span class="dot" style="background:#C9A227"></span>多頭拉回</span></td><td>往上走，但正在休息</td><td>收斂一點，只挑最強的</td></tr>
+      <tr><td><span class="chip c-b"><span class="dot" style="background:#2B5A7B"></span>空頭反彈</span></td><td>往下走，但暫時反彈</td><td>只放小部位</td></tr>
+      <tr><td><span class="chip c-r"><span class="dot" style="background:#B4442F"></span>空頭</span></td><td>大盤往下走</td><td>以防守為主，短線先停</td></tr>
+    </table></div>
+  </div>
+  <div class="card">
+    <h3>戰術策略：紅綠燈</h3>
+    <p>這個是我最常看的地方。它把大盤、法人、外部環境全部綜合起來，用一個紅綠燈告訴你今天的態度。燈號下面有三行，分別是「新買、持股、短線」今天該怎麼做。</p>
+    <div class="lt-row"><span class="light"><i style="background:#E0533A"></i><i style="background:#F2B33D"></i><i class="on" style="background:#6FA35A;color:#6FA35A"></i></span><div><b>今天可以進攻</b><small>大盤多頭、法人在買、外部平穩。可以挑強勢股分批買。</small></div></div>
+    <div class="lt-row"><span class="light"><i style="background:#E0533A"></i><i class="on" style="background:#F2B33D;color:#F2B33D"></i><i style="background:#6FA35A"></i></span><div><b>小心操作</b><small>訊號好壞參半。不是不能買，是部位縮小、只挑最強的，手上的守好停損。</small></div></div>
+    <div class="lt-row"><span class="light"><i class="on" style="background:#E0533A;color:#E0533A"></i><i style="background:#F2B33D"></i><i style="background:#6FA35A"></i></span><div><b>先防守</b><small>很多訊號一起轉弱。今天先不買，檢查停損，跌破就出場，千萬不要攤平。</small></div></div>
+  </div>
+  <div class="card">
+    <h3>早安速報</h3>
+    <p>我設計早安速報，是希望你出門前花一分鐘就知道今天的盤怎麼看。裡面有：</p>
+    <div class="grid2">
+      <div class="tile"><b>昨晚美股</b><small>標普、那斯達克、費半、台積電 ADR、恐慌指數，還有美股風力是順風還是逆風。</small></div>
+      <div class="tile"><b>台指期夜盤</b><small>夜盤和預估開盤，參考就好，出場還是看收盤。</small></div>
+      <div class="tile"><b>我的持股</b><small>每一檔今天要守的價位。</small></div>
+      <div class="tile"><b>提醒和做法</b><small>除權息、處置股的提醒，還有今天建議怎麼做。</small></div>
+    </div>
+    <p>收盤後或假日打開，它講的就是下一個交易日。</p>
+  </div>
+  <div class="card">
+    <h3>我的持股和存活燈號</h3>
+    <p>真的買了股票，就把它記下來。在儀表板「我的持股」按新增，填日期、股票、價格、股數，再選操作方式：</p>
+    <div class="grid2">
+      <div class="tile"><b>波段</b><small>看週線，抱比較久，出場線放比較寬。</small></div>
+      <div class="tile"><b>短線</b><small>看日線，出場比較快，出場線比較近。</small></div>
+    </div>
+    <p>每一檔都會有一個存活燈號，一眼就知道要不要處理：</p>
+    <p><span class="chip c-r">該賣</span>照紀律出場 <span class="chip" style="background:#FFE6D5;color:#9A4A12">危險</span>離停損很近，準備好 <span class="chip c-y">留意</span>多看一眼 <span class="chip c-g">健康</span>不用管它</p>
+    <div class="tip"><b>小技巧</b>把總資金填好，儀表板會算出你現在用了幾成資金。跟建議成數比一比，就知道該加還是該減。</div>
+  </div>
+  <div class="card">
+    <h3>大盤總覽 <span class="where">今日 → 大盤總覽</span></h3>
+    <p>美股、亞股、外部環境是順風還是逆風，還有產業熱力圖。想知道今天錢都跑去哪些產業，看這裡最快。</p>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="ch" id="c5">
+  <div class="ch-head"><div class="ch-num">05</div><div><h2>選股：找到值得研究的股票</h2><small>底部「選股」，上面有四個分頁：跟著大戶、買點追蹤、大補包、掃描</small></div></div>
+  <div class="card">
+    <h3>掃描：鯨魚雷達</h3>
+    <p>鯨魚雷達是全市場掃描。它找的不是「今天漲最多」的股票，而是「訊號成熟、值得研究」的買點候選。上面那顆亮綠色的就是它。</p>
+    <ol class="steps">
+      <li><b>選範圍。</b>「我的自選股」只掃你的自選清單，很快；「鯨魚雷達」掃全市場成交量夠大的股票。</li>
+      <li><b>按「啟動雷達掃描」。</b>全市場要跑一下，可以先去做別的事。</li>
+      <li><b>看結果。</b>收盤後跑最準，掃完會列出候選股和長線名單。</li>
+    </ol>
+    <p>不想等的話，「今日快照（簡易版）」可以直接讀當天已經存好的結果。另外還有「單股快速掃描」，輸入一檔就能分析，不用跑全市場。</p>
+    <div class="note"><b>為什麼今天漲停的股票掃不到？</b>系統的邏輯是「先安靜收縮，再帶量突破」。震盪很大、沒有好好打底的股票會被濾掉，這是我刻意設計來避開追高的，不是壞掉。想看真正的漲跌排行，把排行榜切到「台股排行」。</div>
+  </div>
+  <div class="card">
+    <h3>長線名單和標籤</h3>
+    <p>選股頁最上面的「長線名單」，我建議每週四、週五晚上看一次。按「開始挑選」，它會從最近一次掃描結果裡挑出長線條件達標的股票。每一檔會標上：</p>
+    <p><span class="chip c-g">波段</span>可以抱比較久 <span class="chip c-b">短線</span>快進快出 <span class="chip c-y">等拉回</span>已經漲遠了，先等拉回 <span class="chip c-w">觀望</span>還不到時候</p>
+    <div class="grid2" style="margin-top:10px">
+      <div class="tile" style="background:var(--red-bg)"><b>飆股名單</b><small>正在噴的強勢股，大盤強的時候才會出現。適合短線，波動比較大。</small></div>
+      <div class="tile" style="background:var(--green-bg)"><b>底部起漲名單</b><small>跌深之後帶量重新站回月線的股票。適合波段，比較穩。</small></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>大補包：想自己挑股票的時候</h3>
+    <p>如果你想自己手動選股，就打開大補包。我把網站裡最好用的幾種選股合成一張精選清單：強勢突破、飆股名單、拉回買點、外資連買、投信連買、長線名單、底部起漲、鯨魚雷達高分。</p>
+    <p>同時出現在越多份名單、檢查過越多項、過去成績越好的股票，排在越前面。每一張卡上有：</p>
+    <div class="grid2">
+      <div class="tile"><b>出現在哪幾份名單</b><small>彩色小標籤，一眼看完。</small></div>
+      <div class="tile"><b>六項檢查</b><small>大盤夠不夠強、有沒有創新高或突破趨勢線、成交量夠不夠大、站上週線沒有、法人在不在買、離均線遠不遠。</small></div>
+      <div class="tile"><b>零股要買幾股</b><small>照你的預算算好，也寫出跌破多少就賣、最多虧多少。</small></div>
+      <div class="tile"><b>過去的成績</b><small>這種買點過去幾次有幾次賺、平均賺多少。</small></div>
+    </div>
+    <p>卡片下面可以「放進觀測槽」「加自選」「看圖表」。紅燈「先防守」的日子，最上面會提醒你今天不建議新買，可以先放進觀測槽，等燈號轉好再說。</p>
+  </div>
+  <div class="card">
+    <h3>跟著大戶</h3>
+    <p>看外資、投信最近在買什麼。每張卡都有一個順風車燈號，告訴你現在還能不能跟：</p>
+    <p><span class="chip c-g">可跟車</span><span class="chip c-y">要小心</span><span class="chip" style="background:#FFE6D5;color:#9A4A12">恐倒貨</span><span class="chip c-r">在倒貨</span></p>
+    <p>我自己只跟「可跟車」的。展開卡片按「法人進出走勢」，可以看到從開始買到開始賣的完整線圖。</p>
+    <ul>
+      <li>每月下旬是作帳期，系統會先切到投信主導的名單。</li>
+      <li>月初投信常有結帳賣壓。</li>
+      <li>前一晚美股不好，外資常常收手，外資主導的名單參考就好。</li>
+    </ul>
+    <p>最下面的「法人規律驗證」，可以用真實資料檢查這些說法到底準不準。</p>
+  </div>
+  <div class="card">
+    <h3>買點追蹤</h3>
+    <p>這是我用來檢查系統準不準的地方。它追蹤最近幾個交易日在鯨魚雷達標過買點的股票，從標出那天的收盤價算到現在，看它們後來是站穩還是跌破。</p>
+    <ul>
+      <li><b>最上面一句話</b>：大部分撐著，還是在跌。</li>
+      <li><b>三區</b>：漲最多、站穩還沒漲太多、已經跌破。其他的收在「看全部」。</li>
+      <li><b>每一檔</b>：標出價、現價、一張賺賠多少元，還有它是哪一種買點。</li>
+      <li><b>查一檔</b>：輸入代號，看它這幾天被分到哪一類、為什麼有或沒有出現。</li>
+      <li><b>算一下</b>：告訴你訊號當天買比較好還是等幾天，也會分組告訴你哪一種買點最準。</li>
+    </ul>
+    <div class="tip"><b>我的用法</b>站穩、噴出的再研究；已經跌破的就不要追了。</div>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="ch" id="c6">
+  <div class="ch-head"><div class="ch-num">06</div><div><h2>持股：試算、追蹤、守紀律</h2><small>底部「持股」→ 我的追蹤</small></div></div>
+  <p class="lead">持股頁上面是布告欄，提醒你今天哪幾檔要注意；下面是一格一格的功能方塊，點了會整頁換成那個功能，左上角可以返回。</p>
+  <div class="card">
+    <h3>快速試算</h3>
+    <p>買之前，先來這裡算一下。輸入股票代號和打算投入的資金，選「波段」或「短線」，拉一下「單筆最高承受虧損本金」，按「啟動目標掃描」。</p>
+    <p>它會告訴你這檔現在適不適合進場、防守底線在哪裡、建議買多少股。條件還沒到的，可以直接按「送去潛在觀測槽追蹤」。最下面也幫你列好了手續費和證交稅，記得把成本算進去。</p>
+  </div>
+  <div class="card">
+    <h3>潛在觀測槽</h3>
+    <p>還沒買、但想盯著的股票丟進來就好。可以切「短線動能（日）」或「長線波段（週）」，每一種都有幾項條件，全部達成才算訊號亮起。</p>
+    <div class="grid4">
+      <div class="tile" style="background:var(--lime)"><b>全部達成</b><small>訊號亮起，可以研究進場。</small></div>
+      <div class="tile" style="background:var(--yellow-bg)"><b>差一項</b><small>接近了，多留意。</small></div>
+      <div class="tile"><b>剛開始</b><small>初步符合，還在孵化。</small></div>
+      <div class="tile" style="background:#fff;border:1px solid var(--line)"><b>都還沒</b><small>沒有條件成立。</small></div>
+    </div>
+    <p>每張卡左邊有一個進度圈，右邊的小標籤是每一項條件：打勾的已經達到，灰色的還差。</p>
+  </div>
+  <div class="card">
+    <h3>追蹤魚池</h3>
+    <p>正在追蹤或已經買的股票都可以放這裡。按「新增紀錄」，填代號、日期、操作方式，再選上下限怎麼算：系統建議會依你的波段或短線紀律自動算出防守線和目標。</p>
+    <p>每張卡有大字的現價和賺賠、近期小圖（成本、下限、目標三條線都畫好了），還有一條「健康度」拔河條：往右是賺、往左是靠近防守線。卡片頂端的顏色條也會跟著變，紅色就是碰到下限了。</p>
+    <div class="key"><b>真的買了</b>勾「這是我真的持有的股票」，它就會出現在今日儀表板的「我的持股」，每天幫你看存活燈號。</div>
+  </div>
+  <div class="card">
+    <h3>虛擬筆記</h3>
+    <p>想練習又不想動到本金，就用虛擬筆記。輸入代號加入，系統用當天收盤價記成本，之後幫你追蹤練習的賺賠；時機不好的時候會先提醒你。可以篩獲利中或虧損中，按「儲存今日結算」留下紀錄。</p>
+  </div>
+  <div class="card">
+    <h3>系統持有 <span class="where">持股 → 系統持有</span></h3>
+    <p>看系統照規則模擬持有的股票，以及每一檔的出場線。</p>
+  </div>
+  <div class="card">
+    <h3>巡檢提醒設置</h3>
+    <p>持股頁最下面。打開之後選好時段，系統會在那個時間幫你檢查追蹤的股票，有狀況就通知你。</p>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="ch" id="c7">
+  <div class="ch-head"><div class="ch-num">07</div><div><h2>魚小韭：自動駕駛</h2><small>持股 → 魚小韭</small></div></div>
+  <p class="lead">魚小韭是我最喜歡的功能。它是一個模擬帳戶：你給它一筆「跟著買的預算」，它每天收盤後自己決定要賣什麼、買什麼、買幾股。你可以照著它的計畫，用零股慢慢跟。它不會真的下單，也不會動到你的錢。</p>
+  <div class="card">
+    <h3>它是怎麼決定的</h3>
+    <ol class="steps">
+      <li><b>先出場。</b>跌破防守線、或達到出場條件的先賣。</li>
+      <li><b>看大盤決定投入幾成。</b>大盤好就多買，轉弱就多留現金。</li>
+      <li><b>照順序挑股票。</b>先強勢突破，再來追強、短線拉回、飆股名單，最後才是長線。符合的不夠，就留現金，不硬買。</li>
+      <li><b>算股數。</b>停損線近的買多一點、遠的買少一點，所以每一筆最壞的情況都只會虧差不多的錢，一檔也不會買太多。</li>
+    </ol>
+    <div class="warn"><b>記得先掃描</b>魚小韭要拿到當天收盤後的鯨魚雷達結果才會動。收盤後沒掃，首頁和今天的結論都會提醒你。</div>
+  </div>
+  <div class="card">
+    <h3>四個分頁</h3>
+    <div class="grid2">
+      <div class="tile"><b>今天</b><small>下次開盤要下的單（直接寫日期，例如週一）、為什麼只買了幾檔、這次入選的名單、要注意的持股、系統做了什麼。</small></div>
+      <div class="tile"><b>部位</b><small>每一檔持股卡，有小圖表和離停損多遠；現在投入幾成。</small></div>
+      <div class="tile"><b>目標</b><small>每個月想賺多少、還差多少、最近幾個月的成績；存錢計畫。</small></div>
+      <div class="tile"><b>分析</b><small>跟 0050 比、系統挑的跟自己挑的比、每週損益、歷史紀錄。</small></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>跟著買，四個步驟</h3>
+    <ol class="steps">
+      <li><b>收盤後跑鯨魚雷達。</b>跑完魚小韭就會自動執行，掃描頁會跳出「掃完了」。</li>
+      <li><b>打開「今天」。</b>看「開盤要做的事」，每一筆都可以按「複製」。</li>
+      <li><b>下單。</b>當天下午收盤前可以用「盤後零股」，或下個交易日用「盤中零股」，掛接近建議價格的限價單。</li>
+      <li><b>勾「我都下單了」。</b>這樣系統就知道你跟上了。</li>
+    </ol>
+    <div class="tip"><b>改了預算或設定？</b>按「重新計算這次的計畫」，它會先取消剛剛那次的買賣，再用新的設定重算一次。</div>
+  </div>
+  <div class="card">
+    <h3>看這次入選的名單，哪幾檔勝率比較高</h3>
+    <p>「今天」分頁裡有「看這次入選的名單」，點開可以切長線、短線、飆股三份名單，看魚小韭這次到底看過哪些股票。每一檔會標：</p>
+    <ul>
+      <li><b>狀態</b>：已買進、已持有、在均線下面跳過、一股太貴跳過、沒輪到。</li>
+      <li><b>特徵</b>：長線、底部起漲、強勢突破、飆股名單，短線還會分「拉回型」和「追強型」。</li>
+      <li><b>勝率參考</b>：從過去所有買點的平均勝率出發，這檔的買點種類、大盤、離均線、成交量、是拉回還是追強，過去哪一種比較常賺就往上加、比較常賠就往下扣。明顯比平均高的標「勝率高」，低的標「勝率低」。</li>
+    </ul>
+    <div class="note"><b>先做一件事</b>勝率參考是用買點追蹤的紀錄算的。到「選股 → 買點追蹤」按一次「算一下」，這裡就會出現。</div>
+  </div>
+  <div class="card">
+    <h3>目標和存錢計畫</h3>
+    <p>在「目標」分頁設定每個月想賺多少，它會幫你算這個月賺了多少、還差多少。存錢計畫可以設定每個月存多少，試算本金要多久才夠；存了錢就按「這個月存進」，錢會加進魚小韭的現金和預算（存錢不算賺）。</p>
+    <p>自選清單裡的「魚小韭」可以一鍵同步：系統買的會自動加進去，賣掉的會自動刪掉。自己手動買的會標「手動」，分析頁會把系統和手動的成績分開比，看誰比較準。</p>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="ch" id="c8">
+  <div class="ch-head"><div class="ch-num">08</div><div><h2>秘密愛心便當</h2><small>持股 → 秘密愛心便當</small></div></div>
+  <p class="lead">這是我晚上最愛滑的功能。不想想太多的時候，打開便當，看看今天有什麼驚喜。</p>
+  <div class="card">
+    <div class="grid2">
+      <div class="tile"><b>一般便當</b><small>大盤強的時候推薦飆股，不夠強的時候推薦底部起漲股。</small></div>
+      <div class="tile" style="background:var(--lime)"><b>飆股便當</b><small>挑剛突破（創新高或突破下降趨勢線）、成交量大又明顯放大、還沒漲太多的股票。每一檔都寫好成交量、近期漲幅和防守底線，跌破就出場，不會抱太久。</small></div>
+    </div>
+    <p>上面可以切一般或飆股。大盤不是多頭的時候，飆股便當不開，按鈕會變成「改開一般便當」。沒有符合的就是空便當，這是正常的，代表今天不適合硬買。</p>
+    <p>下面還有「最近開過的便當」，可以看之前開出來的股票到現在漲跌多少。</p>
+    <div class="key"><b>無腦買進</b>按「無腦買進」是讓魚小韭（模擬帳戶）照著買，不會動到真錢。你自己真的買了，記得記到「我的持股」。</div>
+  </div>
+</section>
+
+<!-- 09 -->
+<section class="ch" id="c9">
+  <div class="ch-head"><div class="ch-num">09</div><div><h2>自選與個股頁</h2><small>底部「自選」、右上「找股」</small></div></div>
+  <div class="card">
+    <h3>自選清單</h3>
+    <p>可以分成好幾個清單，左右滑切換。在個股頁可以把股票加進任一個清單。掃描範圍選「我的自選股」時，掃的就是這裡。</p>
+  </div>
+  <div class="card">
+    <h3>個股頁</h3>
+    <p>從找股、清單或掃描結果點進任何一檔，就會打開個股頁。上面有三個分頁：</p>
+    <div class="grid3">
+      <div class="tile"><b>日線</b><small>看最近幾週的走勢，短線用。</small></div>
+      <div class="tile"><b>週線</b><small>看幾個月到一兩年的趨勢，波段用。</small></div>
+      <div class="tile"><b>數據</b><small>系統的完整判斷，下面詳細說。</small></div>
+    </div>
+    <p>圖表上可以開關布林通道（BB）、買賣點標記，用畫線工具，看損益預估。圖表下面會列出最近的買點、賣點和型態。</p>
+    <p><b>數據頁</b>最上面是一張黑色結論卡：系統建議、持倉、最近的出場線、長線條件。下面七塊收成一行，點開才看：持倉與出場線、盤中與綜合洞察、技術面、長線條件、籌碼、價值與股利、回測與勝率。</p>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="ch" id="c10">
+  <div class="ch-head"><div class="ch-num">10</div><div><h2>更多：ETF 與配股配息</h2><small>底部「更多」</small></div></div>
+  <div class="card">
+    <h3>ETF 專區</h3>
+    <p>預設是 0050，也可以輸入或點選其他 ETF。不用輸入任何紀錄，也不一定要定期定額。它會告訴你這檔今天在哪一區、該怎麼做：</p>
+    <div class="grid2">
+      <div class="tile"><b>順勢續抱</b><small>站上週均線往上走，就繼續抱。</small></div>
+      <div class="tile"><b>逆勢分批</b><small>跌破週均線，越跌越分批買。</small></div>
+      <div class="tile"><b>單筆加碼</b><small>跌得特別深才多買一筆，兩次中間要隔幾天。</small></div>
+      <div class="tile"><b>過熱停利</b><small>漲多又創新高，用移動停利線守住；賣出的錢大約一年內分批買回。</small></div>
+    </div>
+    <p>走勢圖上的 <span class="chip" style="background:#2F6FD1;color:#fff">B</span> 是加碼點，<span class="chip" style="background:#B4442F;color:#fff">S</span> 是賣出點，「熱」代表開始過熱。下面還有過去訊號的成績，和賣出後再投入的計算機。</p>
+  </div>
+  <div class="card">
+    <h3>CP 值比較和折溢價</h3>
+    <p>ETF 專區上方可以切到「CP 值比較」，一次比好幾檔 ETF，期間可以選近一年、三年或五年。</p>
+    <div class="key"><b>CP 值怎麼看</b>CP 值 = 每年含息賺幾 % ÷ 這段期間最慘跌過幾 %。越高代表同樣要忍受下跌，換到的報酬越多。報酬已經算進配息，也扣掉了內扣費用。</div>
+    <p>每檔 ETF 還有一張折溢價卡。市價比淨值貴叫「溢價」，等於多付錢；便宜叫「折價」。在加碼區但溢價偏高時，系統會提醒你先等一下。</p>
+  </div>
+  <div class="card">
+    <h3>配股配息專區</h3>
+    <p>列出接下來一段時間要除權息的股票。上面四張重點卡（本週幾檔、最高殖利率、最便宜就配到股、我的持股與自選）點了就會篩選；下面一排日期，點某一天只看那天。</p>
+    <p>每一檔都有最後買進日、現金股利、殖利率、一張領多少。配股的，我也幫你算好至少要買幾股才配得到一股。</p>
+    <div class="warn"><b>最後買進日</b>最晚要在這天收盤前買到，才領得到。遇到國定假日要再往前一天。</div>
+  </div>
+  <div class="card">
+    <h3>指南、設定和問問</h3>
+    <p>「更多」下面還有指南（Tidy 誕生及特色、使用建議步驟、長短線傻瓜 SOP、App 模式、免責聲明、使用手冊）、新手導覽和設定。真的找不到答案，就問右上角的問問。</p>
+    <div class="note"><b>問問到上限了？</b>問問用的是免費 AI，短時間內不能連續問太多。看到「已達使用上限」，等幾秒再問一次就好。</div>
+  </div>
+</section>
+
+<div class="part-head"><small>APPENDIX</small><h2>附錄</h2><p>新手四步驟、常見問題、名詞小辭典</p></div>
+
+<!-- 11 -->
+<section class="ch" id="c11">
+  <div class="ch-head"><div class="ch-num">11</div><div><h2>新手四步驟</h2><small>還不知道從哪裡開始？照這樣走</small></div></div>
+  <div class="card">
+    <ol class="steps">
+      <li><b>看「今天的結論」</b>，決定今天能不能進場、投入幾成。</li>
+      <li><b>挑股票</b>：用長線名單、大補包或秘密愛心便當，再用快速試算評估一下。</li>
+      <li><b>買了就記下來</b>：記到「我的持股」，或記到追蹤魚池並勾選真的持有。</li>
+      <li><b>每天看存活燈號</b>：健康就不用管，該賣就照紀律出場。</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>買之前問自己三個問題</h3>
+    <div class="grid3">
+      <div class="tile"><b>燈號對嗎？</b><small>今天的紅綠燈是綠燈或黃燈嗎？</small></div>
+      <div class="tile"><b>停損想好了嗎？</b><small>跌破哪個價格就賣？</small></div>
+      <div class="tile"><b>睡得著嗎？</b><small>這筆最多虧多少，你能接受嗎？</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="ch" id="c12">
+  <div class="ch-head"><div class="ch-num">12</div><div><h2>大家常問的問題</h2><small>點開看答案</small></div></div>
+  <details class="faq"><summary>掃描完顯示「今天沒有符合的」，是壞掉了嗎？</summary><div>不是喔。條件本來就嚴格，大盤不好、或沒有成熟的訊號時，就會是空的。沒有符合的就不買，也是一種紀律。</div></details>
+  <details class="faq"><summary>週末打開，資料怎麼沒更新？</summary><div>假日休市，看到的是上一個交易日的資料。早安速報和魚小韭的計畫，講的都是下一個交易日，而且會直接寫出日期。</div></details>
+  <details class="faq"><summary>夜盤大跌，我的持股要不要先賣？</summary><div>夜盤和預估開盤參考就好。出場一律看收盤價有沒有跌破防守線。</div></details>
+  <details class="faq"><summary>系統說該賣，可是我覺得會漲回來？</summary><div>系統是照規則提醒，最後還是你決定。但「覺得會漲回來」通常就是凹單的開始，我自己會照紀律先出場，真的轉強再買回來。</div></details>
+  <details class="faq"><summary>魚小韭會不會真的幫我買股票？</summary><div>不會。魚小韭是模擬帳戶，只會告訴你計畫。要不要跟、怎麼下單，都是你自己到券商操作。</div></details>
+  <details class="faq"><summary>魚小韭為什麼只買了一兩檔？</summary><div>打開「今天」分頁的「為什麼只買了幾檔」，會寫出看過幾檔候選、被哪些條件擋下來（例如在均線下面、一股太貴、大盤不夠強所以追強名單不開）。想看完整名單，就點「看這次入選的名單」。符合的不夠就留現金，這是我刻意設計的。</div></details>
+  <details class="faq"><summary>問問說「已達使用上限」？</summary><div>短時間內問太多次了，等幾秒再問一次就好。</div></details>
+</section>
+
+<!-- 13 -->
+<section class="ch" id="c13">
+  <div class="ch-head"><div class="ch-num">13</div><div><h2>名詞小辭典</h2><small>看到不懂的字，來這裡查</small></div></div>
+  <div class="card">
+    <dl class="gloss">
+      <dt>多頭／空頭</dt><dd>多頭是趨勢往上，空頭是趨勢往下。</dd>
+      <dt>波段／短線</dt><dd>波段抱比較久、看週線；短線快進快出、看日線。</dd>
+      <dt>防守底線（停損）</dt><dd>買之前就決定好的出場價位，收盤跌破就賣。</dd>
+      <dt>均線</dt><dd>一段時間收盤價的平均，用來看趨勢。週均線看長一點，日均線看短一點。</dd>
+      <dt>離均線（乖離）</dt><dd>股價離均線多遠。離太遠代表漲太急，現在追進去，停損距離會很大。</dd>
+      <dt>成交量放大</dt><dd>今天成交的張數比平常多很多，代表有人在積極買賣。</dd>
+      <dt>突破趨勢線</dt><dd>原本一路往下的高點連成一條線，股價站上這條線，可能是轉強的開始。</dd>
+      <dt>創新高</dt><dd>股價來到最近一段時間的最高點。</dd>
+      <dt>拉回／追強</dt><dd>拉回是上漲途中暫時往下休息；追強是買正在強勢往上衝的股票。</dd>
+      <dt>勝率</dt><dd>過去同樣的買點，有幾成是賺錢的。</dd>
+      <dt>三大法人</dt><dd>外資、投信、自營商。他們的資金大，連續買賣常會影響股價。</dd>
+      <dt>作帳期</dt><dd>月底、季底，基金經理人為了績效好看，常會拉抬手上的股票。</dd>
+      <dt>零股</dt><dd>不到一張（一千股）的股數。小資金也能買高價股。</dd>
+      <dt>盤中零股／盤後零股</dt><dd>盤中零股是開盤時間內交易，每隔一段時間撮合一次；盤後零股是收盤後交易，下午收盤前委託，一次撮合。</dd>
+      <dt>除權息／最後買進日</dt><dd>公司發股利，除息發現金、除權發股票。要領到，最晚要在最後買進日收盤前買到。</dd>
+      <dt>殖利率</dt><dd>一年股利除以股價，大概就是放著領股利一年賺幾 %。</dd>
+      <dt>折價／溢價</dt><dd>ETF 市價比淨值便宜叫折價，比淨值貴叫溢價。</dd>
+      <dt>CP 值</dt><dd>每年賺幾 % 除以最慘跌過幾 %，越高越划算。</dd>
+      <dt>移動停利</dt><dd>股價往上，停利線也跟著往上移，跌破就賣，把賺到的先鎖住。</dd>
+    </dl>
+  </div>
+</section>
+
+<footer>
+  <p><b>免責聲明</b>：本講義與 Tidy 僅供盤後觀察與學習參考，不構成任何投資建議。市場有風險，投資盈虧由使用者自行負責。</p>
+  <p>Tidy 功能講義・2026 年 10 月版・© 2026 Star Yang</p>
+</footer>
+
+</main>
+</div>
+
+<script>
+(function(){
+  var toc=document.getElementById('toc'),btn=document.getElementById('tocBtn'),scrim=document.getElementById('scrim'),prog=document.getElementById('prog');
+  function close(){toc.classList.remove('open');scrim.classList.remove('on');}
+  btn.addEventListener('click',function(){toc.classList.add('open');scrim.classList.add('on');});
+  scrim.addEventListener('click',close);
+  toc.addEventListener('click',function(e){if(e.target.closest('a'))close();});
+  var links=[].slice.call(toc.querySelectorAll('a')),secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+  function onScroll(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+    prog.style.width=(max>0?h.scrollTop/max*100:0)+'%';
+    var cur=0;secs.forEach(function(s,i){if(s&&s.getBoundingClientRect().top<120)cur=i;});
+    links.forEach(function(a,i){a.classList.toggle('on',i===cur);});
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+})();
+</script>
+</body>
+</html>
