@@ -266,10 +266,10 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
     <p>畫面最下面固定有五個按鈕，所有功能都從這裡進去。點進去之後，上方如果還有一排小分頁，就可以左右切換。</p>
     <div class="phone-nav">
       <div><svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg><b>今日</b><small>儀表板、大盤總覽、盯著</small></div>
-      <div><svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><b>選股</b><small>掃描、大補包、跟著大戶、買點追蹤</small></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><b>選股</b><small>掃描、跟著大戶、買點追蹤、大補包</small></div>
       <div><svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M3 12h18"/></svg><b>持股</b><small>我的追蹤、系統持有</small></div>
       <div><svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg><b>自選</b><small>自選清單</small></div>
-      <div><svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg><b>更多</b><small>ETF、配股配息、指南、設定</small></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg><b>更多</b><small>指南：ETF、配股配息、講義、新手導覽</small></div>
     </div>
     <div class="grid3">
       <div class="tile"><b>問問</b><small>右上角那個黃色的小對話泡泡。不知道怎麼用、看不懂某檔股票，直接用白話問它。</small></div>
@@ -300,26 +300,32 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
   <p class="lead">我的習慣是：買任何股票之前，先看大盤。大盤不對，選到再好的股票也很容易虧。</p>
   <div class="card">
     <h3>今天的結論 <span class="where">儀表板最上面</span></h3>
-    <p>最上面那張黑色的卡，一句話把三件事說完：大盤現在怎樣、建議投入幾成資金、你的持股狀況。很忙的話，看這張就夠了。卡片裡按「繼續閱讀」，可以打開完整的早安速報。</p>
-    <p>儀表板上面有一排快捷鍵，往下滑會收起來、往上滑會出現，點了直接跳到那一區。每張卡的標題列都有重點數字，不想看的可以收起來。</p>
+    <p>最上面那張黑色的卡，一句話說完今天：大盤是什麼燈號、建議投入幾成資金，持股有該賣或危險的也會寫在這裡。很忙的話，看這張就夠了。卡片裡按「繼續閱讀」，可以打開完整的早安速報。</p>
+    <p>卡片上面有一排快捷鍵，往下滑會收起來、往上滑會出現，點了直接跳到那一區。每張卡的標題列左邊有燈號色條、右邊是重點數字，不想看的可以點標題收起來。</p>
   </div>
   <div class="card">
-    <h3>大盤燈號</h3>
-    <p>大盤我分成四種狀態，它決定你今天可以多積極：</p>
+    <h3>大盤燈號 <span class="where">加權指數那張卡</span></h3>
+    <p>大盤燈號跟紅綠燈一樣只有三顆燈：綠燈安全、黃燈注意、紅燈不要動。它看加權指數站在月線和長期均線的哪一邊，決定這段時間該積極還是保守。</p>
     <div class="tbl-wrap"><table>
-      <tr><th>燈號</th><th>意思</th><th>你可以怎麼做</th></tr>
-      <tr><td><span class="chip c-g"><span class="dot" style="background:#2F6B43"></span>多頭</span></td><td>大盤往上走</td><td>可以積極</td></tr>
-      <tr><td><span class="chip c-y"><span class="dot" style="background:#C9A227"></span>多頭拉回</span></td><td>往上走，但正在休息</td><td>收斂一點，只挑最強的</td></tr>
-      <tr><td><span class="chip c-b"><span class="dot" style="background:#2B5A7B"></span>空頭反彈</span></td><td>往下走，但暫時反彈</td><td>只放小部位</td></tr>
-      <tr><td><span class="chip c-r"><span class="dot" style="background:#B4442F"></span>空頭</span></td><td>大盤往下走</td><td>以防守為主，短線先停</td></tr>
+      <tr><th>燈號</th><th>大盤狀況</th><th>建議投入</th></tr>
+      <tr><td><span class="chip c-g"><span class="dot" style="background:#2F6B43"></span>綠燈</span></td><td>多頭，安全</td><td>約 7 成</td></tr>
+      <tr><td><span class="chip c-y"><span class="dot" style="background:#C9A227"></span>黃燈</span></td><td>多頭拉回</td><td>約 4 成</td></tr>
+      <tr><td><span class="chip c-y"><span class="dot" style="background:#C9A227"></span>黃燈</span></td><td>空頭反彈</td><td>約 3 成</td></tr>
+      <tr><td><span class="chip c-r"><span class="dot" style="background:#B4442F"></span>紅燈</span></td><td>空頭，不要動</td><td>3 成以下</td></tr>
     </table></div>
+    <p>股價的顏色還是紅漲綠跌，只有燈號是照紅綠燈的意思。</p>
   </div>
   <div class="card">
-    <h3>戰術策略：紅綠燈</h3>
-    <p>這個是我最常看的地方。它把大盤、法人、外部環境全部綜合起來，用一個紅綠燈告訴你今天的態度。燈號下面有三行，分別是「新買、持股、短線」今天該怎麼做。</p>
-    <div class="lt-row"><span class="light"><i style="background:#E0533A"></i><i style="background:#F2B33D"></i><i class="on" style="background:#6FA35A;color:#6FA35A"></i></span><div><b>今天可以進攻</b><small>大盤多頭、法人在買、外部平穩。可以挑強勢股分批買。</small></div></div>
-    <div class="lt-row"><span class="light"><i style="background:#E0533A"></i><i class="on" style="background:#F2B33D;color:#F2B33D"></i><i style="background:#6FA35A"></i></span><div><b>小心操作</b><small>訊號好壞參半。不是不能買，是部位縮小、只挑最強的，手上的守好停損。</small></div></div>
-    <div class="lt-row"><span class="light"><i class="on" style="background:#E0533A;color:#E0533A"></i><i style="background:#F2B33D"></i><i style="background:#6FA35A"></i></span><div><b>先防守</b><small>很多訊號一起轉弱。今天先不買，檢查停損，跌破就出場，千萬不要攤平。</small></div></div>
+    <h3>戰術策略 <span class="where">儀表板</span></h3>
+    <p>燈號說的是「這段時間」，戰術策略說的是「今天」。它會綜合大盤強弱、最近震盪大不大、美股風力、融資、法人，給你今天的態度：</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>今天的態度</th><th>你可以怎麼做</th></tr>
+      <tr><td><span class="chip c-g">進攻</span></td><td>照名單買，先挑拉回</td></tr>
+      <tr><td><span class="chip c-y">小心</span></td><td>只挑最強的，部位縮小</td></tr>
+      <tr><td><span class="chip c-r">防守</span></td><td>先不要買，跌破出場線就走</td></tr>
+    </table></div>
+    <p>下面三行告訴你「新買、持股、短線」今天怎麼做。資金在產業之間換來換去的時候，會多一行<b>產業輪動</b>提示。最下面的<b>戰術成績單</b>會把每天的態度記下來，3 個交易日後拿大盤實際走勢對答案，看準不準。</p>
+    <p>魚小韭要投入幾成、飆股名單和便當開不開，看的是同一套大盤判斷：加權跌破 20 日線、或費半從高點跌很多時，會自動保守一級。</p>
   </div>
   <div class="card">
     <h3>早安速報</h3>
@@ -358,13 +364,13 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
     <p><span class="chip c-g">撐得住</span><span class="chip c-y">開始轉弱</span><span class="chip c-r">危險</span></p>
     <p>點開可以看分時走勢、今天均價線、漲停封單有沒有變少、五檔掛單，還有估計的內外盤。</p>
     <div class="note"><b>五檔只當參考</b>五檔很容易有假單，掛了又抽掉，所以不要只看委買比較多就覺得安全。我主要看的是均價線和封單。</div>
-    <p>狀況變差的時候，不管你在 App 的哪一頁，上面都會跳出提醒。Android 會震動，iPhone 會嗶一聲。要注意：App 要開著才會提醒，關掉就不會。</p>
+    <p>狀況變差的時候，上面會跳出提醒。Android 會震動，iPhone 會嗶一聲。要注意：只有打開「盯著」這一頁才會更新和提醒，切到別頁或關掉 App 就不會，想盯盤就把這頁開著。</p>
   </div>
 </section>
 
 <!-- 05 -->
 <section class="ch" id="c5">
-  <div class="ch-head"><div class="ch-num">05</div><div><h2>選股：找到值得研究的股票</h2><small>底部「選股」，上面有四個分頁：跟著大戶、買點追蹤、大補包、掃描</small></div></div>
+  <div class="ch-head"><div class="ch-num">05</div><div><h2>選股：找到值得研究的股票</h2><small>底部「選股」，上面有四個分頁：掃描、跟著大戶、買點追蹤、大補包</small></div></div>
   <div class="card">
     <h3>掃描：鯨魚雷達</h3>
     <p>鯨魚雷達是全市場掃描。它找的不是「今天漲最多」的股票，而是「訊號成熟、值得研究」的買點候選。上面那顆亮綠色的就是它。</p>
@@ -378,7 +384,7 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
   </div>
   <div class="card">
     <h3>長線名單和標籤</h3>
-    <p>選股頁最上面的「長線名單」，我建議每週四、週五晚上看一次。按「開始挑選」，它會從最近一次掃描結果裡挑出長線條件達標的股票。每一檔會標上：</p>
+    <p>掃描頁最上面有「長線名單」，我建議每週四、週五晚上看一次。按「開始挑選」，它會從最近一次掃描結果裡挑出長線條件達標的股票。每一檔會標上：</p>
     <p><span class="chip c-g">波段</span>可以抱比較久 <span class="chip c-b">短線</span>快進快出 <span class="chip c-y">等拉回</span>已經漲遠了，先等拉回 <span class="chip c-w">觀望</span>還不到時候</p>
     <div class="grid2" style="margin-top:10px">
       <div class="tile" style="background:var(--red-bg)"><b>飆股名單</b><small>正在噴的強勢股，大盤強的時候才會出現。適合短線，波動比較大。</small></div>
@@ -386,18 +392,31 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
     </div>
   </div>
   <div class="card">
-    <h3>大補包：想自己挑股票的時候</h3>
-    <p>如果你想自己手動選股，就打開大補包。我把網站裡最好用的幾種選股合成一張精選清單：強勢突破、飆股名單、拉回買點、外資連買、投信連買、長線名單、底部起漲、鯨魚雷達高分。</p>
+    <h3>大補包：想自己挑股票的時候 <span class="where">選股 → 大補包</span></h3>
+    <p>如果你想自己手動選股，就打開「大補包」。我把網站裡最好用的幾種選股合成一張精選清單：強勢突破、飆股名單、拉回買點、外資連買、投信連買、長線名單、底部起漲、鯨魚雷達高分。最上面會寫今天的大盤燈號。</p>
     <p>同時出現在越多份名單、檢查過越多項、過去成績越好的股票，排在越前面。每一張卡上有：</p>
     <div class="grid2">
       <div class="tile"><b>出現在哪幾份名單</b><small>彩色小標籤，一眼看完。</small></div>
       <div class="tile"><b>六項檢查</b><small>大盤夠不夠強、有沒有創新高或突破趨勢線、成交量夠不夠大、站上週線沒有、法人在不在買、離均線遠不遠。</small></div>
-      <div class="tile"><b>零股要買幾股</b><small>照你的預算算好，也寫出跌破多少就賣、最多虧多少。</small></div>
+      <div class="tile"><b>零股要買幾股</b><small>照魚小韭的預算算好，也寫出跌破多少就賣、最多虧多少。</small></div>
       <div class="tile"><b>過去的成績</b><small>這種買點過去幾次有幾次賺、平均賺多少。</small></div>
     </div>
-    <p>卡片下面可以「放進觀測槽」「加自選」「看圖表」。紅燈「先防守」的日子，最上面會提醒你今天不建議新買，可以先放進觀測槽，等燈號轉好再說。</p>
-    <p>大補包上面還有一張「前幾天的精選，後來怎麼走」。每天的精選會自動記下來，留 10 天。可以切昨天、前天、近 5 天合計，看那份名單到現在平均漲跌多少，每一檔是站穩、噴出、走弱，還是已經跌破防守。它也會比較排前 3 名和其他檔，讓你知道名次到底準不準。</p>
+    <p>卡片下面可以「放進觀測槽」「加自選」「看圖表」。紅燈的日子，最上面會提醒你今天不建議新買，可以先放進觀測槽，等燈號轉好再說。</p>
+    <p>上面還有一張「前幾天的精選，後來怎麼走」。每天的精選會自動記下來，留 10 天。可以切昨天、前天、近 5 天合計，看那份名單到現在平均漲跌多少，每一檔是站穩、噴出、走弱，還是已經跌破防守。它也會比較排前 3 名和其他檔，讓你知道名次到底準不準。</p>
+    <div class="note"><b>大補包和盯著</b>這兩個分頁要開發者權限才看得到。</div>
   </div>
+  <div class="card">
+    <h3>買點追蹤 <span class="where">選股 → 買點追蹤</span></h3>
+    <p>這是我用來檢查系統準不準的地方。它追蹤最近幾個交易日在鯨魚雷達標過買點的股票，從標出那天的收盤價算到現在，看它們後來是站穩還是跌破。</p>
+    <ul>
+      <li><b>最上面一句話</b>：大部分撐著，還是在跌。</li>
+      <li><b>三區</b>：漲最多、站穩還沒漲太多、已經跌破。其他的收在「看全部」。</li>
+      <li><b>每一檔</b>：標出價、現價、一張賺賠多少元，還有它是哪一種買點。</li>
+      <li><b>查一檔</b>：輸入代號，看它這幾天被分到哪一類、為什麼有或沒有出現。</li>
+      <li><b>算一下</b>：告訴你訊號當天買比較好還是等幾天，也會分組告訴你哪一種買點最準。</li>
+    </ul>
+    <div class="tip"><b>我的用法</b>站穩、噴出的再研究；已經跌破的就不要追了。</div>
+</div>
   <div class="card">
     <h3>跟著大戶</h3>
     <p>看外資、投信最近在買什麼。每張卡都有一個順風車燈號，告訴你現在還能不能跟：</p>
@@ -409,39 +428,30 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
       <li>前一晚美股不好，外資常常收手，外資主導的名單參考就好。</li>
     </ul>
     <p>最下面的「法人規律驗證」，可以用真實資料檢查這些說法到底準不準。</p>
-    <p>最上面有一張「法人名單變化」，可以收起來。切外資或投信，看兩件事：</p>
+    <p>最上面有一張「法人名單變化」，可以收起來。由上往下是：</p>
     <div class="grid2">
-      <div class="tile"><b>今天新增</b><small>今天剛開始連買的股票，還有買了幾張。</small></div>
-      <div class="tile"><b>昨天有、今天沒有</b><small>原本連買幾天，今天是轉賣，還是只是沒買。</small></div>
+      <div class="tile"><b>今天的法人建議</b><small>可以留意哪個產業、先避開哪個、你的持股有沒有被法人賣。紅燈時只看不買。</small></div>
+      <div class="tile"><b>產業四象限</b><small>右上外資、投信都在買，左下都在賣，另外兩格是對作。也可以切成「買超 vs 漲跌」，看錢進來但還沒漲的產業。</small></div>
+      <div class="tile"><b>同時在買、對作</b><small>外資、投信今天都在連買的股票特別拉出來；一邊買一邊賣的也列出來。</small></div>
+      <div class="tile"><b>7 天熱力條、走勢分析</b><small>每個產業這 7 天是流入還是流出；這 3 天跟前面比，是轉強、轉弱還是持續。</small></div>
     </div>
-    <p>名單是存在你自己的手機裡，所以第一天只會記錄，隔一個交易日打開才看得到比較。</p>
-  </div>
-  <div class="card">
-    <h3>買點追蹤</h3>
-    <p>這是我用來檢查系統準不準的地方。它追蹤最近幾個交易日在鯨魚雷達標過買點的股票，從標出那天的收盤價算到現在，看它們後來是站穩還是跌破。</p>
-    <ul>
-      <li><b>最上面一句話</b>：大部分撐著，還是在跌。</li>
-      <li><b>三區</b>：漲最多、站穩還沒漲太多、已經跌破。其他的收在「看全部」。</li>
-      <li><b>每一檔</b>：標出價、現價、一張賺賠多少元，還有它是哪一種買點。</li>
-      <li><b>查一檔</b>：輸入代號，看它這幾天被分到哪一類、為什麼有或沒有出現。</li>
-      <li><b>算一下</b>：告訴你訊號當天買比較好還是等幾天，也會分組告訴你哪一種買點最準。</li>
-    </ul>
-    <div class="tip"><b>我的用法</b>站穩、噴出的再研究；已經跌破的就不要追了。</div>
+    <p>最下面是名單：切外資或投信、今天新增或全部名單，再用「土洋同買」「對作」或產業小標籤篩，也可以只看自選和持股。點泡泡或熱力條的一列，名單就只剩那個產業。</p>
+    <p>名單存在你自己的手機裡，最多 7 個交易日，那天有打開 App 才記得到；記滿 3 天才有走勢分析。</p>
   </div>
 </section>
 
 <!-- 06 -->
 <section class="ch" id="c6">
   <div class="ch-head"><div class="ch-num">06</div><div><h2>持股：試算、追蹤、守紀律</h2><small>底部「持股」→ 我的追蹤</small></div></div>
-  <p class="lead">持股頁上面是布告欄，提醒你今天哪幾檔要注意；下面是一格一格的功能方塊，點了會整頁換成那個功能，左上角可以返回。</p>
+  <p class="lead">持股頁上面是布告欄，提醒你今天哪幾檔要注意；下面是一格一格的功能方塊：追蹤工具有快速試算、潛在觀測槽、追蹤魚池，進階模組有魚小韭、虛擬筆記、秘密愛心便當。點了會整頁換成那個功能，左上角可以返回。</p>
   <div class="card">
-    <h3>快速試算</h3>
-    <p>買之前，先來這裡算一下。輸入股票代號和打算投入的資金，選「波段」或「短線」，拉一下「單筆最高承受虧損本金」，按「啟動目標掃描」。</p>
-    <p>它會告訴你這檔現在適不適合進場、防守底線在哪裡、建議買多少股。條件還沒到的，可以直接按「送去潛在觀測槽追蹤」。最下面也幫你列好了手續費和證交稅，記得把成本算進去。</p>
+    <h3>快速試算 <span class="where">持股 → 快速試算</span></h3>
+    <p>買之前先算一下：輸入代號、本金，選波段或短線，它會告訴你停損在哪、這筆最多虧多少、可以買幾股。條件還沒全部符合的，先放到潛在觀測槽等；真的買了，記到追蹤魚池。</p>
+    <div class="tip"><b>盤中想買</b>開發者權限的「今日 → 盯著」買前體檢也可以填本金，順便看現在追不追得。</div>
   </div>
   <div class="card">
-    <h3>潛在觀測槽</h3>
-    <p>還沒買、但想盯著的股票丟進來就好。可以切「短線動能（日）」或「長線波段（週）」，每一種都有幾項條件，全部達成才算訊號亮起。</p>
+    <h3>潛在觀測槽 <span class="where">持股 → 潛在觀測槽</span></h3>
+    <p>還沒買、但想等買點的股票丟進來就好。可以切「短線動能（日）」或「長線波段（週）」，每一種都有幾項條件，全部達成才算訊號亮起。</p>
     <div class="grid4">
       <div class="tile" style="background:var(--lime)"><b>全部達成</b><small>訊號亮起，可以研究進場。</small></div>
       <div class="tile" style="background:var(--yellow-bg)"><b>差一項</b><small>接近了，多留意。</small></div>
@@ -451,8 +461,8 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
     <p>每張卡左邊有一個進度圈，右邊的小標籤是每一項條件：打勾的已經達到，灰色的還差。</p>
   </div>
   <div class="card">
-    <h3>追蹤魚池</h3>
-    <p>正在追蹤或已經買的股票都可以放這裡。按「新增紀錄」，填代號、日期、操作方式，再選上下限怎麼算：系統建議會依你的波段或短線紀律自動算出防守線和目標。</p>
+    <h3>追蹤魚池 <span class="where">持股 → 追蹤魚池</span></h3>
+    <p>正在追蹤或已經買的股票都可以放這裡（跟儀表板的「我的持股」是同一份資料）。按「新增紀錄」，填代號、日期、操作方式，再選上下限怎麼算：系統建議會依你的波段或短線紀律自動算出防守線和目標。</p>
     <p>每張卡有大字的現價和賺賠、近期小圖（成本、下限、目標三條線都畫好了），還有一條「健康度」拔河條：往右是賺、往左是靠近防守線。卡片頂端的顏色條也會跟著變，紅色就是碰到下限了。</p>
     <div class="key"><b>真的買了</b>勾「這是我真的持有的股票」，它就會出現在今日儀表板的「我的持股」，每天幫你看存活燈號。</div>
   </div>
@@ -502,6 +512,11 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
       <li><b>勾「我都下單了」。</b>這樣系統就知道你跟上了。</li>
     </ol>
     <div class="tip"><b>改了預算或設定？</b>按「重新計算這次的計畫」，它會先取消剛剛那次的買賣，再用新的設定重算一次。</div>
+  </div>
+  <div class="card">
+    <h3>昨晚費半大跌的隔天</h3>
+    <p>台股跟美國費半連動很深。我回頭看過去的紀錄，前一晚費半大跌的隔天，候選股大多收黑。所以早上打開魚小韭，如果昨晚費半大跌，「今天」分頁最上面會跳出紅色提醒，建議今天的新買先不要下。</p>
+    <p>按「把這次的新買取消」，魚小韭會只做賣出，錢留在現金，等下一次收盤再說。買前體檢也會多一行「昨晚費半」，一起提醒你。</p>
   </div>
   <div class="card">
     <h3>看這次入選的名單，哪幾檔勝率比較高</h3>
@@ -568,7 +583,7 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
 
 <!-- 10 -->
 <section class="ch" id="c10">
-  <div class="ch-head"><div class="ch-num">10</div><div><h2>更多：ETF 與配股配息</h2><small>底部「更多」</small></div></div>
+  <div class="ch-head"><div class="ch-num">10</div><div><h2>更多：ETF 與配股配息</h2><small>底部「更多」→ 指南</small></div></div>
   <div class="card">
     <h3>ETF 專區</h3>
     <p>預設是 0050，也可以輸入或點選其他 ETF。不用輸入任何紀錄，也不一定要定期定額。它會告訴你這檔今天在哪一區、該怎麼做：</p>
@@ -594,7 +609,7 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
   </div>
   <div class="card">
     <h3>指南、設定和問問</h3>
-    <p>「更多」下面還有指南（Tidy 誕生及特色、使用建議步驟、長短線傻瓜 SOP、App 模式、免責聲明、使用手冊）、新手導覽和設定。真的找不到答案，就問右上角的問問。</p>
+    <p>「更多」下面還有 Tidy 功能講義、指南（Tidy 誕生及特色、使用建議步驟、長短線傻瓜 SOP、App 模式、免責聲明、使用手冊）、新手導覽和設定。真的找不到答案，就問右上角的問問。</p>
     <div class="note"><b>問問到上限了？</b>問問用的是免費 AI，短時間內不能連續問太多。看到「已達使用上限」，等幾秒再問一次就好。</div>
   </div>
 </section>
@@ -607,15 +622,15 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
   <div class="card">
     <ol class="steps">
       <li><b>看「今天的結論」</b>，決定今天能不能進場、投入幾成。</li>
-      <li><b>挑股票</b>：用長線名單、大補包或秘密愛心便當，再用快速試算評估一下。</li>
-      <li><b>買了就記下來</b>：記到「我的持股」，或記到追蹤魚池並勾選真的持有。</li>
+      <li><b>挑股票</b>：用掃描、跟著大戶或便當挑，再用快速試算算好停損和股數。</li>
+      <li><b>買了就記下來</b>：記到「我的持股」或追蹤魚池，勾選真的持有。</li>
       <li><b>每天看存活燈號</b>：健康就不用管，該賣就照紀律出場。</li>
     </ol>
   </div>
   <div class="card">
     <h3>買之前問自己三個問題</h3>
     <div class="grid3">
-      <div class="tile"><b>燈號對嗎？</b><small>今天的紅綠燈是綠燈或黃燈嗎？</small></div>
+      <div class="tile"><b>燈號對嗎？</b><small>今天的大盤燈號是綠燈或黃燈嗎？</small></div>
       <div class="tile"><b>停損想好了嗎？</b><small>跌破哪個價格就賣？</small></div>
       <div class="tile"><b>睡得著嗎？</b><small>這筆最多虧多少，你能接受嗎？</small></div>
     </div>
