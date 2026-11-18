@@ -307,7 +307,8 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
     <div class="grid2">
       <div class="tile"><b>大盤趨勢</b><small>一張卡說完現在的大盤，右上角的圖案告訴你是多頭、盤整還是空頭。點卡片看大盤的細節。</small></div>
       <div class="tile"><b>守、等、攻</b><small>這段時間該怎麼做：守先顧好手上的、等看就好、攻可以找買點。亮的那一格就是現在。</small></div>
-      <div class="tile"><b>四格</b><small>外面的風（美股、費半昨晚怎麼走）、錢往哪去（資金流進流出哪些產業）、我的股票（幾檔要處理）、今天能買（大盤不好時會上鎖）。</small></div>
+      <div class="tile"><b>四格</b><small>外面的風（美股、費半昨晚怎麼走）、錢往哪去（資金流進流出哪些產業）、我的股票（幾檔要處理）、今天能買（大盤不好時會上鎖）。前兩格打開就會自己讀資料，下面寫是哪一天的資料。</small></div>
+      <div class="tile"><b>系統成績</b><small>大盤卡下面那一顆。我把過去 14 個月的資料照現在的規則重跑，跟同期的加權指數放在一起：大漲時系統常常落後，轉弱時比較抗跌。也寫了怎麼算、有什麼限制。這是回測，不代表以後也會這樣。表格裡「3 成 0050」是指總資產 3 成固定放 0050、其他照系統買：大漲時不會落後那麼多，轉弱時少賺一些。</small></div>
       <div class="tile"><b>今天一句話</b><small>把上面全部濃縮成一句：今天該怎麼做。最下面有一顆「小星的小屋」按鈕，點了才會進去。</small></div>
     </div>
     <div class="tip"><b>想看全部資料</b>按上面的「完整」。App 每次打開都先顯示簡單看，要看完整再按一下就好。</div>
@@ -320,15 +321,16 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
   </div>
   <div class="card">
     <h3>大盤圖案</h3>
-    <p>整個 App 只用一套大盤判斷：簡單看、今天的結論、魚小韭要投入幾成、飆股名單和便當開不開，看的都是同一個。它會看大盤的強弱、最近震盪大不大、美股的風，還有加權有沒有跌破 20 日線、費半有沒有從高點跌很多。</p>
+    <p>整個 App 只用一套大盤判斷：加權指數收盤跟兩條線比，短期趨勢線(月線)和長期趨勢線。兩條都站上是多頭，兩條都跌破是空頭，只站上一條是盤整。今天頁、機會頁、便當和其他選股功能看的都是同一個，不會一邊說多頭、一邊說空頭。</p>
+    <p>大盤卡上的「系統現在」那一句，就是系統照的買法；下面一行寫加權指數是哪一天、哪個時間的資料。不確定怎麼判斷的，按大盤卡下面的「多頭、盤整、空頭怎麼判斷」。</p>
     <div class="tbl-wrap"><table>
       <tr><th>圖案</th><th>今天的態度</th><th>你可以怎麼做</th></tr>
-      <tr><td><span class="chip c-r"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5M5 11l7-7 7 7"/></svg>多頭</span></td><td>攻</td><td>照名單買，先挑位置剛好的</td></tr>
-      <tr><td><span class="chip c-y"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"><path d="M3 8l9-4 9 4v9l-9 4-9-4z"/><path d="M3 8l9 4 9-4M12 12v9"/></svg>盤整・多頭拉回</span></td><td>等</td><td>收斂一點，只挑最強的、部位縮小</td></tr>
-      <tr><td><span class="chip c-y"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"><path d="M3 8l9-4 9 4v9l-9 4-9-4z"/><path d="M3 8l9 4 9-4M12 12v9"/></svg>盤整・空頭反彈</span></td><td>等</td><td>只放小部位，跌破就走</td></tr>
-      <tr><td><span class="chip c-g"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11a7 7 0 0114 0v3l-2 1v3H7v-3l-2-1z"/><circle cx="9.5" cy="11.5" r="1.4" fill="currentColor"/><circle cx="14.5" cy="11.5" r="1.4" fill="currentColor"/><path d="M10 18v-2M14 18v-2"/></svg>空頭</span></td><td>守</td><td>先不要買，跌破出場線就走</td></tr>
+      <tr><td><span class="chip c-r"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5M5 11l7-7 7 7"/></svg>多頭</span></td><td>攻</td><td>照系統正常買；市場太熱時短線少買一點</td></tr>
+      <tr><td><span class="chip c-y"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"><path d="M3 8l9-4 9 4v9l-9 4-9-4z"/><path d="M3 8l9 4 9-4M12 12v9"/></svg>盤整・多頭拉回</span></td><td>等</td><td>起漲股照常，拉回和一般短線先不買</td></tr>
+      <tr><td><span class="chip c-y"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"><path d="M3 8l9-4 9 4v9l-9 4-9-4z"/><path d="M3 8l9 4 9-4M12 12v9"/></svg>盤整・空頭反彈</span></td><td>等</td><td>跟空頭一樣：短線只買起漲股，每檔買一半</td></tr>
+      <tr><td><span class="chip c-g"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11a7 7 0 0114 0v3l-2 1v3H7v-3l-2-1z"/><circle cx="9.5" cy="11.5" r="1.4" fill="currentColor"/><circle cx="14.5" cy="11.5" r="1.4" fill="currentColor"/><path d="M10 18v-2M14 18v-2"/></svg>空頭</span></td><td>守</td><td>短線只買起漲股，每檔買一半；手上的跌破出場線就走</td></tr>
     </table></div>
-    <p>顏色跟股價一樣：偏多是紅、偏空是綠。</p>
+    <p>顏色跟股價一樣：偏多是紅、偏空是綠。完整模式的「今天的戰術」另外看法人、美股，只當參考。</p>
   </div>
   <div class="card">
     <h3>早安速報</h3>
